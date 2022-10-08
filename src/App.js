@@ -53,7 +53,6 @@ const INITIAL_FORM_STATE = {
   ledger: "",
   issueDate: "",
   travelDate: "",
-  ledger: "",
   class: "",
   infant: false,
   basicFare: "",
@@ -256,11 +255,7 @@ const App = () => {
                     <Textfield name="totalAmount" label="Total Amount " />
                   </Grid>
                   <Grid item xs={2}>
-                    <Select
-                      name="receipt"
-                      label="Payment"
-                      options={receipt}
-                    />
+                    <Select name="receipt" label="Payment" options={receipt} />
                   </Grid>
 
                   <Grid item xs={12}>
