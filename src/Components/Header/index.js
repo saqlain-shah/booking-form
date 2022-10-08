@@ -1,13 +1,11 @@
-import React from 'react';
-import { Toolbar, AppBar, Typography } from '@material-ui/core';
+import React from "react";
+import { Toolbar, AppBar, Typography } from "@material-ui/core";
 
-const Header = ({ }) => {
+const Header = () => {
   return (
     <AppBar position="static">
       <Toolbar>
-        <Typography variant="h6">
-          Booking Form
-        </Typography>
+        <Typography variant="h6">Booking Form</Typography>
       </Toolbar>
     </AppBar>
   );
