@@ -17,7 +17,8 @@ const useStyles = makeStyles((theme) => ({
     marginBottom: theme.spacing(8),
   },
 }));
-
+const cabin = ["V", "U", "L", "I", "O", "N", "T", "M", "K", "Y", "P"];
+const gender = ["Male", "Female", "Others"];
 const receipt = ["Bank Deposit", "Cash Deposit", "Others"];
 const agent = [
   "Khadim",
@@ -25,19 +26,22 @@ const agent = [
   "Asghar",
   "Ibrahim ",
   "Zaheer ",
-  " Ali Naqi",
+  "Ali Naqi",
   "Jawed ",
   "Mujtaba ",
-  " Taqi",
-  " Not Specify",
+  "Taqi",
+  "Not Specify",
 ];
 const INITIAL_FORM_STATE = {
-  firstName: "",
-  lastName: "",
+  gender: "",
+  name: "",
+  surName: "",
+  dob: "",
+  cnic: "",
+  passportNumber: "",
   email: "",
   phone: "",
-  addressLine1: "",
-  addressLine2: "",
+  address: "",
   city: "",
   state: "",
   country: "",
@@ -49,49 +53,65 @@ const INITIAL_FORM_STATE = {
   ledger: "",
   issueDate: "",
   travelDate: "",
+  ledger: "",
+  class: "",
+  infant: false,
   basicFare: "",
   taxes: "",
   sc: "",
   discount: "",
   totalAmount: "",
   receipt: "",
-  termsOfService: false,
+  verifyDetails: false,
 };
 
 const FORM_VALIDATION = Yup.object().shape({
-  firstName: Yup.string().required("Required"),
-  lastName: Yup.string().required("Required"),
-  //email: Yup.string().email("Invalid email.").required("Required"),
+  gender: Yup.string().required("Specify Gender Please!"),
+  name: Yup.string().required("Name Required"),
+  surName: Yup.string().required("SurName Required"),
+  dob: Yup.string().required("Please Mention DOB"),
+  cnic: Yup.number()
+    .integer()
+    .typeError("Please enter a valid National Identity Card Number")
+    .required("CNIC is Required"),
+  passportNumber: Yup.string(),
+  email: Yup.string().email("Invalid email."),
   phone: Yup.number()
     .integer()
     .typeError("Please enter a valid phone number")
-    .required("Required"),
-  addressLine1: Yup.string(),
-  addressLine2: Yup.string(),
+    .required("Phone Number is Required"),
+  address: Yup.string(),
   city: Yup.string().required("Required"),
   state: Yup.string(),
   country: Yup.string().required("Required"),
-  issueDate: Yup.date().required("Required"),
-  travelDate: Yup.date().required("Required"),
-  issueBy: Yup.string().required("Required"),
-  to: Yup.string().required("Required"),
-  pnr: Yup.string().required("Required"),
+
+  pnr: Yup.string().required("PNR is Required"),
   ticket: Yup.number()
     .integer()
-    .typeError("Please enter a valid Ticket Number")
-    .required("Required"),
+    .typeError("Invalid Ticket Number")
+    .required("Please enter Ticket Number"),
+  to: Yup.string().required("Required"),
+  from: Yup.string().required("Required"),
+  issueBy: Yup.string().required("Required"),
+  issueDate: Yup.date().required("Required"),
+  travelDate: Yup.date().required("Required"),
+  ledger: Yup.string(),
+  cabin: Yup.string(),
+  infant: Yup.boolean(),
+
   basicFare: Yup.number()
     .integer()
-    .typeError("Please enter Basic Fare")
+    .typeError("Invalid Fare Amount")
     .required("Required"),
+  taxes: Yup.number().integer().typeError("Invalid Amount"),
+  sc: Yup.number().integer().typeError("Invalid Amount"),
+  discount: Yup.number().integer().typeError("Invalid Amount"),
   totalAmount: Yup.number()
     .integer()
     .typeError("Please enter Total Amount")
     .required("Required"),
-  from: Yup.string().required("Required"),
-  ledger: Yup.string(),
   receipt: Yup.string().required("Required"),
-  termsOfService: Yup.boolean()
+  verifyDetails: Yup.boolean()
     .oneOf([true], "The terms and conditions must be accepted.")
     .required("The terms and conditions must be accepted."),
 });
@@ -112,49 +132,56 @@ const App = () => {
                 ...INITIAL_FORM_STATE,
               }}
               validationSchema={FORM_VALIDATION}
-              onSubmit={(values) => {
+              onSubmit={(data, values) => {
+                console.log(data);
                 console.log(values);
               }}
             >
               <Form>
                 <Grid container spacing={2}>
                   <Grid item xs={12}>
-                    <Typography>Passenger's details</Typography>
+                    <Typography variant="h4">Passenger's details</Typography>
                   </Grid>
 
-                  <Grid item xs={6}>
-                    <Textfield name="firstName" label="First Name" />
+                  <Grid item xs={2}>
+                    <Select name="gender" label="Gender" options={gender} />
+                  </Grid>
+                  <Grid item xs={4}>
+                    <Textfield name="name" label="Name" />
                   </Grid>
 
-                  <Grid item xs={6}>
-                    <Textfield name="lastName" label="Last Name" />
+                  <Grid item xs={4}>
+                    <Textfield name="surName" label="SurName" />
                   </Grid>
-
-                  <Grid item xs={12}>
+                  <Grid item xs={2}>
+                    <DateTimePicker name="dob" label="Date Of Birth" />
+                  </Grid>
+                  <Grid item xs={4}>
+                    <Textfield name="cnic" label="CNIC" />
+                  </Grid>
+                  <Grid item xs={4}>
+                    <Textfield name="passportNumber" label="Passport Number" />
+                  </Grid>
+                  <Grid item xs={4}>
+                    <Textfield name="phone" label="Phone" />
+                  </Grid>
+                  <Grid item xs={4}>
                     <Textfield name="email" label="Email" />
                   </Grid>
 
-                  <Grid item xs={12}>
-                    <Textfield name="phone" label="Phone" />
+                  <Grid item xs={8}>
+                    <Textfield name="address" label="Address" />
                   </Grid>
 
-                  <Grid item xs={12}>
-                    <Textfield name="addressLine1" label="Address Line 1" />
-                  </Grid>
-
-                  <Grid item xs={12}>
-                    <Textfield name="addressLine2" label="Address Line 2" />
-                  </Grid>
-
-                  <Grid item xs={6}>
+                  <Grid item xs={4}>
                     <Textfield name="city" label="City" />
                   </Grid>
 
-                  <Grid item xs={6}>
-                    <Textfield name="state" label="State" />
+                  <Grid item xs={4}>
+                    <Textfield name="state" label="State/Province" />
                   </Grid>
 
-                  <Grid item xs={12}>
+                  <Grid item xs={4}>
                     <Select
                       name="country"
                       label="Country"
@@ -163,72 +190,83 @@ const App = () => {
                   </Grid>
 
                   <Grid item xs={12}>
-                    <Typography>Booking information</Typography>
+                    <Typography variant="h4">Booking information</Typography>
                   </Grid>
-                  <Grid item xs={6}>
+                  <Grid item xs={3}>
                     <Textfield name="pnr" label="PNR" />
                   </Grid>
-                  <Grid item xs={6}>
+                  <Grid item xs={3}>
                     <Textfield name="ticket" label="Ticket #" />
                   </Grid>
 
-                  <Grid item xs={6}>
+                  <Grid item xs={3}>
                     <Textfield name="to" label="To" />
                   </Grid>
-                  <Grid item xs={6}>
+                  <Grid item xs={3}>
                     <Textfield name="from" label="From" />
                   </Grid>
 
-                  <Grid item xs={6}>
+                  <Grid item xs={4}>
                     <Select
                       name="issueBy"
                       label="Issue/Process By"
                       options={agent}
                     />
                   </Grid>
-                  <Grid item xs={6}>
-                    <Textfield name="ledger" label="Ledger" />
-                  </Grid>
-                  <Grid item xs={6}>
+
+                  <Grid item xs={4}>
                     <DateTimePicker
                       name="issueDate"
                       label="Ticket Issue/Process Date"
                     />
                   </Grid>
 
-                  <Grid item xs={6}>
+                  <Grid item xs={4}>
                     <DateTimePicker name="travelDate" label="Date of Travel" />
                   </Grid>
-
-                  <Grid item xs={12}>
-                    <Typography>Fare Calculation</Typography>
+                  <Grid item xs={8}>
+                    <Textfield name="ledger" label="Ledger" />
                   </Grid>
-                  <Grid item xs={6}>
-                    <Textfield name="basicFare" label="Basic Fare " />
+                  <Grid item xs={2}>
+                    <Select name="class" label="Class" options={cabin} />
                   </Grid>
-                  <Grid item xs={6}>
-                    <Textfield name="taxes" label="Taxes " />
-                  </Grid>
-                  <Grid item xs={6}>
-                    <Textfield name="sc" label="Sales Commission" />
-                  </Grid>
-                  <Grid item xs={6}>
-                    <Textfield name="discount" label="Discount " />
-                  </Grid>
-                  <Grid item xs={6}>
-                    <Textfield name="totalAmount" label="Total Amount " />
-                  </Grid>
-                  <Grid item xs={6}>
-                    <Select
-                      name="receipt"
-                      label="Payment Method"
-                      options={receipt}
+                  <Grid item xs={2}>
+                    <Checkbox
+                      name="infant"
+                      legend="1 infant allowed"
+                      label="INFANT "
                     />
                   </Grid>
                   <Grid item xs={12}>
+                    <Typography variant="h4">Fare Calculation</Typography>
+                  </Grid>
+                  <Grid item xs={2}>
+                    <Textfield name="basicFare" label="Basic Fare " />
+                  </Grid>
+                  <Grid item xs={2}>
+                    <Textfield name="taxes" label="Taxes " />
+                  </Grid>
+                  <Grid item xs={2}>
+                    <Textfield name="discount" label="Discount " />
+                  </Grid>
+                  <Grid item xs={2}>
+                    <Textfield name="sc" label="Commission" />
+                  </Grid>
+                  <Grid item xs={2}>
+                    <Textfield name="totalAmount" label="Total Amount " />
+                  </Grid>
+                  <Grid item xs={2}>
+                    <Select
+                      name="receipt"
+                      label="Payment"
+                      options={receipt}
+                    />
+                  </Grid>
+
+                  <Grid item xs={12}>
                     <Checkbox
-                      name="termsOfService"
-                      legend="Terms Of Service"
+                      name="verifyDetails"
+                      legend="Verify Details"
                       label="I agree"
                     />
                   </Grid>
