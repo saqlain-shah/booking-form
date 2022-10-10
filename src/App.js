@@ -10,6 +10,7 @@ import DateTimePicker from "./Components/FormsUI/DataTimePicker";
 import Checkbox from "./Components/FormsUI/Checkbox";
 import Button from "./Components/FormsUI/Button";
 import countries from "./data/countries.json";
+import axios from "axios";
 
 const useStyles = makeStyles((theme) => ({
   formWrapper: {
@@ -131,9 +132,19 @@ const App = () => {
                 ...INITIAL_FORM_STATE,
               }}
               validationSchema={FORM_VALIDATION}
-              onSubmit={(data, values) => {
-                console.log(data);
-                console.log(values);
+              onSubmit={(values, actions) => {
+                setTimeout(() => {
+                  axios
+                    .post("http://localhost:8800/api/bookings", values, actions)
+                    .then((response) => {
+                      console.log(response);
+                    })
+                    .catch((error) => {
+                      console.log(error.response.data);
+                    });
+                
+                  actions.setSubmitting(false);
+                }, 400);
               }}
             >
               <Form>
